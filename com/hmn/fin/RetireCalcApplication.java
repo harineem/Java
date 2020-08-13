@@ -43,6 +43,7 @@ public class RetireCalcApplication {
 		
 		rdetail =rc.calculateDetailedSum(persdetails );
 		System.out.println("Funds needed for expenses post retirement "+ rdetail.getRetirementsum());
+		System.out.println(" Years your savings will hold post retirement "+rdetail.getSavings_end_year());
 		 
 		
 		

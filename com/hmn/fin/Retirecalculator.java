@@ -10,8 +10,8 @@ import java.util.Scanner;
 
 /**
  * @author harineem
- * @version 0.1
- * Purpose: Calculate the money you need to sustain after you retire
+ * @version 0.2
+ * Purpose: Calculate the money you need to sustain after you retire and the years your savings will hold
  * Reason: Just wanted to see how lambdas make it so easy to code , practically 2 lines.
  */
 public class Retirecalculator {
@@ -40,16 +40,25 @@ public class Retirecalculator {
 		
 		double[] values = new double[years];
 		double retirementsum = 0.0d;
+		double savings = perdetails.getCurrentsavings();
+		int years_savings_last = 0;
 		//System.out.println(" detail "+ details.toString());
 		
 		//actual code which does the calculation, power of lambdas
 		Arrays.parallelSetAll(values, i -> perdetails.getMonthlyexpense()*12*Math.pow((1+perdetails.getInflationrate() /100), i));
 	    Arrays.parallelPrefix(values, Double::sum);
+	    retirementsum = values[years-1];
 	    
+	    //calculate how long your savings will last
+	    Arrays.parallelSetAll(values, e->{if((savings - values[e])<=0) {
+	    	return 0;}
+	    	else { return 1; } }) ;
+	    years_savings_last = (int)Arrays.stream(values).filter(p->(p==1)).count();
+	    detail.setSavings_end_year(years_savings_last);
 	   
 
 	    
-	    retirementsum = values[years-1];
+	   
 	    if(perdetails.getCurrentsavings()>0.0d ) {
 	    	retirementsum = perdetails.getCurrentsavings()>retirementsum?
 	    			0:(retirementsum-perdetails.getCurrentsavings());
